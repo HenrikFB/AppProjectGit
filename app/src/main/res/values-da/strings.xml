@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--main activity-->
+
+    <string name="mainTextViewHeader">Velkommen</string>
+    <string name ="mainBtnSignUp">Registrer dig her?</string>
+    <string name ="mainBtnLogin">Log ind</string>
+
+    <!-- sign up activity -->
+    <string name="signupTextViewHeader">Registrere dig her</string>
+    <string name="signupBtnSignUp"> Registrere</string>
+    <string name="signupBtnLogin"> Allerede Bruger ? Log ind</string>
+
+</resources>

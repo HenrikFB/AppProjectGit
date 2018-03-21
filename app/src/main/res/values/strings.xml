@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">AppProject</string>
+
+    <!--main activity-->
+
+    <string name="mainTextViewHeader">Welcome</string>
+    <string name ="mainBtnSignUp">Need to sign up?</string>
+    <string name ="mainBtnLogin">Login</string>
+
+    <!-- sign up activity -->
+    <string name="signupTextViewHeader">Sign up here!</string>
+    <string name="signupBtnSignUp"> Sign up</string>
+    <string name="signupBtnLogin"> Already user? Login</string>
+
+
+</resources>
