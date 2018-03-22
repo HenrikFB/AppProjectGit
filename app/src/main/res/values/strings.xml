@@ -4,13 +4,20 @@
     <!--main activity-->
 
     <string name="mainTextViewHeader">Welcome</string>
-    <string name ="mainBtnSignUp">Need to sign up?</string>
-    <string name ="mainBtnLogin">Login</string>
+    <string name="mainBtnSignUp">Need to sign up?</string>
+    <string name="mainBtnLogin">Login</string>
 
     <!-- sign up activity -->
     <string name="signupTextViewHeader">Sign up here!</string>
     <string name="signupBtnSignUp"> Sign up</string>
     <string name="signupBtnLogin"> Already user? Login</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
+
+    <string name="title_gallery">Gallery</string>
+    <string name="title_camera">Camera</string>
+    <string name="title_map">Map</string>
+
+    <string name="cameraBtnUpload">Capture and upload</string>
 
 </resources>
