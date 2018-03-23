@@ -1,4 +1,9 @@
 <resources>
+
+<!--
+    <string name="google_maps_API_key">AIzaSyC80awLgWXYuz4axrXMC-7jJ_4zKhJ9Huk</string>
+-->
+    <string name="google_maps_API_key">AIzaSyDNmtRVOYPdm1xKdL0Z1gdkZ_ytV7Id_5U</string>
     <string name="app_name">AppProject</string>
 
     <!--main activity-->
@@ -18,7 +23,7 @@
     <string name="title_camera">Camera</string>
     <string name="title_map">Map</string>
 
-    <string name="cameraBtnCapture">Capture</string>
-    <string name="cameraBtnUpload">Upload</string>
+    <string name="cameraBtnCapture">Capture and upload</string>
+
 
 </resources>

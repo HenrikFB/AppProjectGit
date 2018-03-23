@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -98,17 +99,15 @@ public class SignUpActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            public static final String TAG ="fail";
 
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful()){
+                    //finish();//nye tilføjelser
                     Toast.makeText(getApplicationContext(), "User Registrered succesfull", Toast.LENGTH_SHORT).show();
                     startProfileActivity();
                 } else{
-                    //Toast.makeText(getApplicationContext(), "User registration failed", Toast.LENGTH_SHORT).show();
-                    //Log.d(TAG, "onComplete: Failed=" + task.getException().getMessage());
                     if(task.getException() instanceof FirebaseAuthUserCollisionException){
                         Toast.makeText(getApplicationContext(), "User is already registered", Toast.LENGTH_SHORT).show();
                     } else {
@@ -124,4 +123,20 @@ public class SignUpActivity extends AppCompatActivity {
         startProfileActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(startProfileActivityIntent, REQ_PROFILE);
     }
+/*
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser()==null){
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+        }
+    }
+
+    private void loadUserInformation(){
+        FirebaseUser user = mAuth.getCurrentUser();
+
+    }
+*/
 }
+

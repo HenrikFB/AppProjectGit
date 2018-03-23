@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +54,14 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+
+
+
+
         mainBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //finish();//nye tilføjelser.
                 startSignUpActivity();
             }
         });
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
+                            //finish();//nye med at være logget ind
                             startProfileActivity();
                         } else {
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -124,6 +132,22 @@ public class MainActivity extends AppCompatActivity {
         Intent startSignUpAcitivityIntent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivityForResult(startSignUpAcitivityIntent, REQ_SIGNUP);
     }
+/*
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("text", mainEditTextEmail.getText().toString());
+    }
+*/
+    /*
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser()!=null){
+            finish();
+            startActivity(new Intent(this, ProfileActivity.class));
+        }
 
-
+    }
+    */
 }

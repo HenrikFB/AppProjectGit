@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -34,15 +35,15 @@ import static android.app.Activity.RESULT_OK;
 
 public class CameraFragment extends Fragment {
 
-    Button cameraBtnUpload, cameraBtnCapture;
+    Button cameraBtnCapture;
     ImageView cameraImageView;
+    ProgressBar progressBar;
 
     private StorageReference mStorageReference;
     private FirebaseAuth auth;
 
     private static final int CAMERA_REQUEST_CODE = 1;
 
-    //private ProgressDialog mProgressDialog;
 
     @Nullable
     @Override
@@ -50,11 +51,9 @@ public class CameraFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
-        cameraBtnUpload = (Button) view.findViewById(R.id.cameraBtnUpload);
         cameraBtnCapture = (Button) view.findViewById(R.id.cameraBtnCapture);
         cameraImageView = (ImageView) view.findViewById(R.id.cameraImageView);
-
-        //mProgressDialog = new ProgressDialog(getContext());
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         auth = FirebaseAuth.getInstance();
         mStorageReference = FirebaseStorage.getInstance().getReference();
@@ -64,22 +63,6 @@ public class CameraFragment extends Fragment {
             public void onClick(View view) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-                //get the signed in user
-                //FirebaseUser user = auth.getCurrentUser();
-                //String userID = user.getUid();
-            }
-        });
-
-        cameraBtnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //get the signed in user
-                //FirebaseUser user = auth.getCurrentUser();
-                //String userID = user.getUid();
-
-                //Uri downloadUri = taskSnapshot.getDownloadUrl();
-
             }
         });
 
@@ -90,6 +73,8 @@ public class CameraFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK ){
+
+            progressBar.setVisibility(View.VISIBLE);
 
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
@@ -112,11 +97,13 @@ public class CameraFragment extends Fragment {
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Upload failed!", Toast.LENGTH_SHORT).show();
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressBar.setVisibility(View.GONE);
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
                     Toast.makeText(getActivity(), "Upload succesful!", Toast.LENGTH_SHORT).show();
                 }
@@ -126,38 +113,4 @@ public class CameraFragment extends Fragment {
     }
 }
 
-           /*
-           dette er acitivityresult.
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] dataBAOS = baos.toByteArray();
-
-            cameraImageView.setImageBitmap(imageBitmap);
-
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference("gs://appproject-600c0.appspot.com");
-
-            StorageReference imagesRef = storageReference.child("Photos");
-            //Uri uri = data.getData();
-
-            //StorageReference filepath = mStorageReference.child("Photos").child(uri.getLastPathSegment());
-
-            UploadTask uploadTask = imagesRef.putBytes(dataBAOS);
-
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                    Picasso.get().load(downloadUri).into(cameraImageView);
-
-                    Toast.makeText(getActivity(), "Upload succesfull!", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getActivity(), "Upload failed!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            */
