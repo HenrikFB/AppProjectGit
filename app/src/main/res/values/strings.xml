@@ -18,6 +18,7 @@
     <string name="title_camera">Camera</string>
     <string name="title_map">Map</string>
 
-    <string name="cameraBtnUpload">Capture and upload</string>
+    <string name="cameraBtnCapture">Capture</string>
+    <string name="cameraBtnUpload">Upload</string>
 
 </resources>
