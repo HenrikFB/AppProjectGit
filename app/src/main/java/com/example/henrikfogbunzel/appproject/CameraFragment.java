@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -39,11 +40,14 @@ public class CameraFragment extends Fragment {
     ImageView cameraImageView;
     ProgressBar progressBar;
 
+    //private Uri mImageUri;
+
+    //private StorageTask mStorageTask;
+
     private StorageReference mStorageReference;
     private FirebaseAuth auth;
 
     private static final int CAMERA_REQUEST_CODE = 1;
-
 
     @Nullable
     @Override
@@ -56,6 +60,10 @@ public class CameraFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         auth = FirebaseAuth.getInstance();
+        /*
+        Skal jeg lave:
+        mStorageReference = FirebaseStorage.getInstance().getReference(""images/users/" + userID");
+         */
         mStorageReference = FirebaseStorage.getInstance().getReference();
 
         cameraBtnCapture.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +99,13 @@ public class CameraFragment extends Fragment {
             FirebaseUser user = auth.getCurrentUser();
             String userID = user.getUid();
 
-            StorageReference storageReference = mStorageReference.child("images/users/" + userID);
+            /*
+            ?!?!?
+                StorageReference storageReference = mStorageReference.child(System.currentTimeMillis() + "." + uri eller dataByte);
+             */
+
+            //"." + System.current????
+            StorageReference storageReference = mStorageReference.child("images/users/" + userID + "." + System.currentTimeMillis());
 
             UploadTask uploadTask = storageReference.putBytes(dataByte);
             uploadTask.addOnFailureListener(new OnFailureListener() {
