@@ -4,6 +4,8 @@ import android.*;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,9 +14,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -32,18 +38,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapFragment extends Fragment {
 
     private static final String TAG = "MapFragment";
 
     private static final int ERROR_DIALOG_REQUEST = 9001;
-
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
 
+    //widgets
+    private EditText mSearchText;
 
+    //vars
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -55,11 +67,52 @@ public class MapFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_map, null);
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        getLocationPermission();
+        mSearchText = (EditText) view.findViewById(R.id.input_search);
 
         isServicesOK();
 
+        getLocationPermission();
+
+
+
         return view;
+    }
+
+    private void init(){
+        Log.d(TAG,"init: initializing");
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+
+                    //execute our method for searching
+                    getLocate();
+                }
+                return false;
+            }
+        });
+    }
+
+    private void getLocate(){
+        Log.d(TAG, "geoLocate: geolocating");
+
+        String searchString = mSearchText.getText().toString();
+
+        Geocoder geocoder = new Geocoder(getActivity());
+        List<Address> list = new ArrayList<>();
+        try{
+            list = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
+            Log.e(TAG, "geoLocate: IOException: " + e.getMessage());
+        }
+        if(list.size() > 0){
+            Address address = list.get(0);
+
+            Log.d(TAG, "geoLocate: found a location: " + address.toString());
+        }
     }
 
     private void getDeviceLocation() {
@@ -124,6 +177,8 @@ public class MapFragment extends Fragment {
                     mMap.setMyLocationEnabled(true);
                     //My search bar block it anyway and make it later as custom icon.
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+                    init();
                 }
             }
         });
