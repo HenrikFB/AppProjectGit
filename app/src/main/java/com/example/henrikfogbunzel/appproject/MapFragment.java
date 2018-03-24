@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,12 +57,16 @@ public class MapFragment extends Fragment {
 
     //widgets
     private EditText mSearchText;
+    private ImageView mGps;
+
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+
+    // 5:38 er jeg nået til i Add Marker to Google Map.
 
     @Nullable
     @Override
@@ -70,6 +75,7 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         mSearchText = (EditText) view.findViewById(R.id.input_search);
+        mGps = (ImageView) view.findViewById(R.id.ic_gps);
 
         isServicesOK();
 
@@ -96,6 +102,15 @@ public class MapFragment extends Fragment {
                 return false;
             }
         });
+
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked gps icon");
+                getDeviceLocation();
+            }
+        });
+
         hideSoftKeyboard();
     }
 
