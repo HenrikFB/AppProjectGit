@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -95,6 +96,7 @@ public class MapFragment extends Fragment {
                 return false;
             }
         });
+        hideSoftKeyboard();
     }
 
     private void getLocate(){
@@ -154,7 +156,10 @@ public class MapFragment extends Fragment {
                 .position(latLng)
                 .title(title);
         mMap.addMarker(options);
+        hideSoftKeyboard();
+
     }
+
 
 
     private void initMap() {
@@ -257,5 +262,11 @@ public class MapFragment extends Fragment {
             }
         }
     }
+
+    //keyboard disappear after search
+    private void hideSoftKeyboard(){
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
 }
 
