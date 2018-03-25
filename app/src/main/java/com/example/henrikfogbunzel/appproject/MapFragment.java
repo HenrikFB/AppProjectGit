@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,12 +29,19 @@ import android.widget.Toast;
 
 
 import com.example.henrikfogbunzel.appproject.googleSamples.PlaceAutocompleteAdapter;
+import com.example.henrikfogbunzel.appproject.model.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.PendingResults;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -77,6 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
+    private PlaceInfo mPlace;
 
 
     // 5:38 er jeg nået til i Add Marker to Google Map.
@@ -109,6 +118,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(getActivity(), this)
                 .build();
+
+        mSearchText.setOnItemClickListener(mAutocompleteClicklistener);
 
         mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
 
@@ -310,10 +321,72 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     }
 
 
-
+        //slet denne metode?
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
     }
+
+
+    /*
+       -----------------------GOOGLE PLACES API AUTOCOMPLETE SUGGESTIONS----------------------------
+     */
+    private AdapterView.OnItemClickListener mAutocompleteClicklistener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            hideSoftKeyboard();
+
+            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(i);
+            final String placeId = item.getPlaceId();
+
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(@NonNull PlaceBuffer places) {
+           if(!places.getStatus().isSuccess()){
+               Log.d(TAG, "onResult: Place query did not complete successfully." + places.getStatus().toString());
+               places.release();
+               return;
+           }
+           final Place place = places.get(0);
+
+          // mPlace = new PlaceInfo();
+           //mPlace.setName(place.getName().toString());
+
+
+            try{
+                mPlace = new PlaceInfo();
+                mPlace.setName(place.getName().toString());
+                Log.d(TAG, "onResult: name: " + place.getName());
+                mPlace.setAddress(place.getAddress().toString());
+                Log.d(TAG, "onResult: address: " + place.getAddress());
+//                mPlace.setAttributions(place.getAttributions().toString());
+//                Log.d(TAG, "onResult: attributions: " + place.getAttributions());
+                mPlace.setId(place.getId());
+                Log.d(TAG, "onResult: id:" + place.getId());
+                mPlace.setLatlng(place.getLatLng());
+                Log.d(TAG, "onResult: latlng: " + place.getLatLng());
+                mPlace.setRating(place.getRating());
+                Log.d(TAG, "onResult: rating: " + place.getRating());
+                mPlace.setPhoneNumber(place.getPhoneNumber().toString());
+                Log.d(TAG, "onResult: phone number: " + place.getPhoneNumber());
+                mPlace.setWebsiteUri(place.getWebsiteUri());
+                Log.d(TAG, "onResult: website uri: " + place.getWebsiteUri());
+
+                Log.d(TAG, "onResult: place: " + mPlace.toString());
+            }catch (NullPointerException e){
+                Log.e(TAG, "onResult: NullPointerException: " + e.getMessage() );
+            }
+
+            moveCamera(new LatLng(place.getViewport().getCenter().latitude,
+                    place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace.getName());
+
+           places.release();
+        }
+    };
 }
 
