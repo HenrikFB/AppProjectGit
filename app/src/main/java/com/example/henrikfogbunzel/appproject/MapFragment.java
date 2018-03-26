@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.henrikfogbunzel.appproject.adaptors.CustomInfoWindowAdapter;
 import com.example.henrikfogbunzel.appproject.googleSamples.PlaceAutocompleteAdapter;
 import com.example.henrikfogbunzel.appproject.model.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
@@ -232,6 +233,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
         mMap.clear();
+
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity()));
 
         if(placeInfo != null){
             try{
