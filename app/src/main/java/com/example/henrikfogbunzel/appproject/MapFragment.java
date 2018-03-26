@@ -50,6 +50,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -76,7 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps;
+    private ImageView mGps, mInfo;
 
 
     //vars
@@ -86,9 +87,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
+    private Marker mMarker;
 
-
-    // 5:38 er jeg nået til i Add Marker to Google Map.
 
     @Nullable
     @Override
@@ -98,14 +98,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
         mSearchText = (AutoCompleteTextView) view.findViewById(R.id.input_search);
         mGps = (ImageView) view.findViewById(R.id.ic_gps);
+        mInfo = (ImageView)  view.findViewById(R.id.place_info);
 
         isServicesOK();
 
         getLocationPermission();
 
-
-
         return view;
+    }
+
+    /*
+    onPause() handle: java.lang.NullPointerException: Attempt to invoke virtual method 'android.view.Window android.support.v
+    https://stackoverflow.com/questions/36105118/error-in-fragment-already-managing-a-googleapiclient-with-id-0
+    */
+    @Override
+    public void onPause(){
+        super.onPause();
+        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.disconnect();
     }
 
     private void init(){
@@ -145,6 +155,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked gps icon");
                 getDeviceLocation();
+            }
+        });
+
+        mInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked place info");
+                try{
+                    if(mMarker.isInfoWindowShown()){
+                        mMarker.hideInfoWindow();
+                    } else {
+                        Log.d(TAG, "onClick: place info: " + mPlace.toString());
+                        mMarker.showInfoWindow();
+                    }
+                }catch (NullPointerException e){
+                    Log.e(TAG, "onClick: NullPointerException: " + e.getMessage());
+                }
             }
         });
 
@@ -200,6 +227,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         }
     }
 
+    private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo) {
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        mMap.clear();
+
+        if(placeInfo != null){
+            try{
+                String snippet = "Address: " + placeInfo.getAddress() + "\n" +
+                        "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
+                        "Website: " + placeInfo.getWebsiteUri() + "\n" +
+                        "Price Rating: " + placeInfo.getRating() + "\n";
+                MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getName()).snippet(snippet);
+
+                mMarker = mMap.addMarker(options);
+
+
+            } catch (NullPointerException e){
+                Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage());
+            }
+        } else{
+            mMap.addMarker(new MarkerOptions().position(latLng));
+        }
+
+        hideSoftKeyboard();
+    }
+
     private void moveCamera(LatLng latLng, float zoom, String title) {
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -209,7 +263,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 .title(title);
         mMap.addMarker(options);
         hideSoftKeyboard();
-
     }
 
 
@@ -383,10 +436,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             }
 
             moveCamera(new LatLng(place.getViewport().getCenter().latitude,
-                    place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace.getName());
+                    place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace);
 
            places.release();
         }
     };
+
+
 }
 
