@@ -55,6 +55,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,6 +96,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
     private Marker mMarker;
+
+    //firebase
+    private DatabaseReference mDatabaseReference;
+    private FirebaseAuth auth;
 
 
     @Nullable
@@ -377,9 +388,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     }
 
 
-        //slet denne metode?
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+
+        //firebase
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        String userID = user.getUid();
+
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + System.currentTimeMillis());
+
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
+            }
+        });
+
     }
 
 

@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.example.henrikfogbunzel.appproject.model.ImagesModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -40,7 +42,9 @@ public class CameraFragment extends Fragment {
     ImageView cameraImageView;
     ProgressBar progressBar;
 
-    //private Uri mImageUri;
+    private Uri mImageUri;
+
+    private ImagesModel mImagesModel;
 
     //private StorageTask mStorageTask;
 
@@ -99,13 +103,10 @@ public class CameraFragment extends Fragment {
             FirebaseUser user = auth.getCurrentUser();
             String userID = user.getUid();
 
-            /*
-            ?!?!?
-                StorageReference storageReference = mStorageReference.child(System.currentTimeMillis() + "." + uri eller dataByte);
-             */
 
-            //"." + System.current????
-            StorageReference storageReference = mStorageReference.child("images/users/" + userID + "." + System.currentTimeMillis());
+            //skal jeg ik bruge push?
+            //UUID.randomUUID()
+            StorageReference storageReference = mStorageReference.child("users/" + userID + "/" + UUID.randomUUID());
 
             UploadTask uploadTask = storageReference.putBytes(dataByte);
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -118,11 +119,12 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressBar.setVisibility(View.GONE);
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    //Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    mImageUri = taskSnapshot.getDownloadUrl();
+                    //mImagesModel.setImageUrl(mImageUri);
                     Toast.makeText(getActivity(), "Upload succesful!", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
     }
 }

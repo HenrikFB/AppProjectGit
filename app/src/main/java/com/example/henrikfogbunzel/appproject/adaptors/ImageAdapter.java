@@ -50,10 +50,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return mUploads.size();
     }
 
-
-    //View view = inflater.inflate(R.layout.fragment_camera, container, false);
-
-
     public class ImageViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView imageView;
