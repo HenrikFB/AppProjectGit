@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -69,7 +70,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -119,9 +120,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         mGps = (ImageView) view.findViewById(R.id.ic_gps);
         mInfo = (ImageView)  view.findViewById(R.id.place_info);
 
-        //isServicesOK();
+        isServicesOK();
 
-       // getLocationPermission();
+        getLocationPermission();
 
         return view;
     }
@@ -292,7 +293,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
-        /*
+
                 new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -303,7 +304,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     getDeviceLocation();
 
                     //getDeviceLocation() was not enough to get the blue dot on the map
-                    and added the bottom on the map to find your location again
+                    //and added the bottom on the map to find your location again
                     //this before but i use getContext(). fragments??
 
                     if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -323,8 +324,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     init();
                 }
             }
-        });
-*/
+        };
+
     }
 
     private boolean isServicesOK(){
@@ -398,7 +399,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
 
-
+/*
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -451,20 +452,10 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
             }
         });
-        /*
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "Failed to read value.", databaseError.toException());
-            }
-        });
-          */
     }
+
+    */
 
 
     /*
@@ -530,5 +521,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     };
 
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
 }
 
