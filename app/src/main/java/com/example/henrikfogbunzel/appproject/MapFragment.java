@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -48,7 +47,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+//import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -57,17 +56,20 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.google.android.gms.maps.SupportMapFragment;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+public class MapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -96,11 +98,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
     private Marker mMarker;
+    SupportMapFragment mapFragment;
 
     //firebase
-    private DatabaseReference mDatabaseReference;
+    //private DatabaseReference mDatabaseReference;
     private FirebaseAuth auth;
 
+    FirebaseDatabase mFirebaseDatabase;
+    DatabaseReference mDatabaseReference;
+
+    String imgUIIDString;
 
     @Nullable
     @Override
@@ -112,9 +119,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mGps = (ImageView) view.findViewById(R.id.ic_gps);
         mInfo = (ImageView)  view.findViewById(R.id.place_info);
 
-        isServicesOK();
+        //isServicesOK();
 
-        getLocationPermission();
+       // getLocationPermission();
 
         return view;
     }
@@ -282,9 +289,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
 
     private void initMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
+        mapFragment.getMapAsync(this);
+        /*
+                new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 Toast.makeText(getActivity(), "Map is Ready", Toast.LENGTH_SHORT).show();
@@ -292,11 +301,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
                 if (mLocationPermissionsGranted) {
                     getDeviceLocation();
-                    /*
+
                     //getDeviceLocation() was not enough to get the blue dot on the map
                     and added the bottom on the map to find your location again
                     //this before but i use getContext(). fragments??
-                    */
+
                     if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
@@ -315,6 +324,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 }
             }
         });
+*/
     }
 
     private boolean isServicesOK(){
@@ -399,8 +409,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         FirebaseUser user = auth.getCurrentUser();
         String userID = user.getUid();
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + System.currentTimeMillis());
+        //mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + "/"+imgUIIDString+"/");
 
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/");
+
+        //REF: https://stackoverflow.com/questions/43635994/retrieve-location-from-firebase-and-put-marker-on-google-map-api-for-android?rq=1
+
+        //mDatabaseReference.addListenerForSingleValueEvent(new Eve);
+
+        mDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                LatLng newLocation = new LatLng(
+                        dataSnapshot.child("lattitude").getValue(Long.class),
+                        dataSnapshot.child("longtitude").getValue(Long.class)
+                                        );
+                Log.d(TAG, "onChildAdded LatLng newLocation: " +dataSnapshot.child("lattitude").getValue(Long.class) + " " +dataSnapshot.child("longtitude").getValue(Long.class));
+                mMap.addMarker(new MarkerOptions()
+                        .position(newLocation)
+                        .title(dataSnapshot.getKey()));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -412,7 +463,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         });
-
+          */
     }
 
 

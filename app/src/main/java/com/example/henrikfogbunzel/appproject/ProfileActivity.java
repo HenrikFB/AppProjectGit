@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class ProfileActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+import com.google.android.gms.maps.SupportMapFragment;
+
+public class ProfileActivity extends FragmentActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +35,22 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         return false;
     }
 
+    private boolean loadMapFragment(SupportMapFragment supportMapFragment){
+        if(supportMapFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, supportMapFragment)
+                    .commit();
+            return true;
+        }
+        return  false;
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         Fragment fragment = null;
+        //SupportMapFragment supportMapFragment = null;
 
         switch (item.getItemId()){
             case R.id.navigation_gallery:
@@ -45,10 +60,13 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
                 fragment = new CameraFragment();
                 break;
             case R.id.navigation_map:
-                fragment = new MapFragment();
+                 fragment = new MapFragment();
+                //supportMapFragment = new MapFragment();
                 break;
         }
 
         return loadFragment(fragment);
+       //return loadMapFragment(supportMapFragment);
+
     }
 }

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.example.henrikfogbunzel.appproject.GalleryFragment;
 import com.example.henrikfogbunzel.appproject.R;
 import com.example.henrikfogbunzel.appproject.model.ImagesModel;
+import com.example.henrikfogbunzel.appproject.model.Upload;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
      */
 
     private Context mContext;
+    //private List<ImagesModel> mUploads;
     private List<ImagesModel> mUploads;
 
     public ImageAdapter(Context context, List<ImagesModel> uploads){
@@ -39,7 +41,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         ImagesModel imagesModelCurrent = mUploads.get(position);
-        Picasso.get().load(imagesModelCurrent.getImageUrl()).fit().centerCrop().into(holder.imageView);
+        //Upload upload = mUploads.get(position);
+
+        //Picasso.get().load(imagesModelCurrent.getImageUrl()).fit().centerCrop().into(holder.imageView);
+        Picasso.get().load(imagesModelCurrent.getImageUriString()).fit().centerCrop().into(holder.imageView);
+        //Picasso.get().load(upload.getImageUriString()).fit().centerCrop().into(holder.imageView);
     }
     //DataStorageDemo
     @Override

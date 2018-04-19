@@ -23,6 +23,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GalleryFragment extends Fragment {
 
@@ -35,6 +36,9 @@ public class GalleryFragment extends Fragment {
     private List<ImagesModel> mImagesModels;
 
     private static final String TAG = "CalleryFragment";
+
+
+    String imgUIIDString;
 
     @Nullable
     @Override
@@ -53,10 +57,10 @@ public class GalleryFragment extends Fragment {
         FirebaseUser user = auth.getCurrentUser();
         String userID = user.getUid();
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" );
+        //UUID imgUUID = UUID.randomUUID();
+        //final String imgUIIDString = imgUUID.toString();
 
-         //den til at starte med:
-        //mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + "/"+imgUIIDString+"/" + imgUIIDString);
 
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
