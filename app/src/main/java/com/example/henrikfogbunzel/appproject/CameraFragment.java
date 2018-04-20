@@ -208,9 +208,9 @@ public class CameraFragment extends Fragment {
             //StorageReference storageReference = mStorageReference.child("users/" + userID + "/" + "/"+imgUUID+"/" + imgUUID );
 
             mFirebaseDatabase = FirebaseDatabase.getInstance();
-            mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/" + "/"+imgUIIDString+"/");
+            mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/"+imgUIIDString+"/");
 
-            StorageReference storageReference = mStorageReference.child("users/" + userID + "/" + "/"+imgUIIDString+"/" + imgUUID);
+            StorageReference storageReference = mStorageReference.child("users/" + userID + "/"+imgUIIDString+"/" + imgUUID);
 /*
             Map<String, String> map = new HashMap<>();
             map.put("URI",  imageUriString);

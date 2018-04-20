@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.henrikfogbunzel.appproject.adaptors.CustomInfoWindowAdapter;
 import com.example.henrikfogbunzel.appproject.googleSamples.PlaceAutocompleteAdapter;
+import com.example.henrikfogbunzel.appproject.model.ImagesModel;
 import com.example.henrikfogbunzel.appproject.model.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -68,20 +70,27 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = "MapFragment";
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
-
     private static final int ERROR_DIALOG_REQUEST = 9001;
-
     private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
+    private FirebaseAuth auth;
+    FirebaseDatabase mFirebaseDatabase;
+    DatabaseReference mDatabaseReference;
+
+
+    String imgUIIDString;
 
     @Nullable
     @Override
@@ -99,6 +108,94 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Toast.makeText(getActivity(), "Map is Ready", Toast.LENGTH_SHORT).show();
+
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        String userID = user.getUid();
+
+        //mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + "/"+imgUIIDString+"/");
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/");
+
+        //https://viblo.asia/p/firebase-realtime-database-in-android-WwXKPXlwKEJ
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("users/" + userID);
+
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                ImagesModel imagesModel = dataSnapshot.getValue(ImagesModel.class);
+                //System.out.println(imagesModel.getLongitude());
+                //System.out.println(imagesModel.getLattitude());
+
+                Double lat = Double.parseDouble(imagesModel.getLattitude());
+                Double lon = Double.parseDouble(imagesModel.getLongitude());
+
+                LatLng newLocation = new LatLng(lat, lon);
+                mMap.addMarker(new MarkerOptions()
+                        .position(newLocation)
+                        .title(dataSnapshot.getKey()));
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        /*
+        ValueEventListener imagesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ImagesModel imagesModel = dataSnapshot.getValue(ImagesModel.class);
+                System.out.println(imagesModel);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadImagesModel:onCancelled", databaseError.toException());
+            }
+        };
+        mDatabaseReference.addValueEventListener(imagesListener);
+        */
+
+        if (mLocationPermissionsGranted) {
+            getDeviceLocation();
+
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            //My search bar block it anyway and make it later as custom icon.
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        }
     }
 
     private void initMap() {
@@ -106,7 +203,42 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
       mapFragment.getMapAsync(this);
       }
 
+    private void getDeviceLocation() {
+        Log.d(TAG, "getDeviceLocation: getting the devices current location");
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
+        try {
+            if (mLocationPermissionsGranted) {
+                Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: found location!");
+                            Location currentLocation = (Location) task.getResult();
+                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
+
+                        } else {
+                            Log.d(TAG, "onComplete: current location is null");
+                            Toast.makeText(getActivity(), "Unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+        }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom) {
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        //mMap.clear();
+
+
+
+    }
 
     private boolean isServicesOK(){
         Log.d(TAG, "isServiceOK: checking google services version");
