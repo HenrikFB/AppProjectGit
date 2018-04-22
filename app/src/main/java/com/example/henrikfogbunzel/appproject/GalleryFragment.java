@@ -60,7 +60,7 @@ public class GalleryFragment extends Fragment {
         //UUID imgUUID = UUID.randomUUID();
         //final String imgUIIDString = imgUUID.toString();
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + imgUIIDString+"/" + imgUIIDString);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/");
 
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override

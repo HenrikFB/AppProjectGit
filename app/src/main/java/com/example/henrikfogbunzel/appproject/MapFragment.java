@@ -4,6 +4,8 @@ import android.*;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -50,6 +52,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 //import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -67,7 +70,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
-
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -130,15 +135,51 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //System.out.println(imagesModel.getLongitude());
                 //System.out.println(imagesModel.getLattitude());
 
-                Double lat = Double.parseDouble(imagesModel.getLattitude());
-                Double lon = Double.parseDouble(imagesModel.getLongitude());
+                /*
+
+                URL url = new URL("http://load.image/from/url");
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
+                map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                 */
+/*
+                boolean condition = true;
+                while(condition) {
+                    condition= false;
+                    Bitmap bmp;
+                    try {
+                        URL url = new URL(imagesModel.getImageUriString());
+                        bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        Double lat = Double.parseDouble(imagesModel.getLattitude());
+                        Double lon = Double.parseDouble(imagesModel.getLongitude());
+
+                        LatLng newLocation = new LatLng(lat, lon);
+                        mMap.addMarker(new MarkerOptions()
+                                .position(newLocation)
+                                .title(dataSnapshot.getKey())
+                                .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                */
+
+               Double lat = Double.parseDouble(imagesModel.getLattitude());
+               Double lon = Double.parseDouble(imagesModel.getLongitude());
 
                 LatLng newLocation = new LatLng(lat, lon);
                 mMap.addMarker(new MarkerOptions()
                         .position(newLocation)
                         .title(dataSnapshot.getKey()));
+                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp)));
 
             }
+
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
