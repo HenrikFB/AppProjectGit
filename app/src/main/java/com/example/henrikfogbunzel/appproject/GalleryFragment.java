@@ -37,7 +37,6 @@ public class GalleryFragment extends Fragment {
 
     private static final String TAG = "CalleryFragment";
 
-
     String imgUIIDString;
 
     @Nullable

@@ -197,7 +197,6 @@ public class CameraFragment extends Fragment {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] dataByte = baos.toByteArray();
 
-
             FirebaseUser user = auth.getCurrentUser();
             String userID = user.getUid();
 
@@ -219,7 +218,6 @@ public class CameraFragment extends Fragment {
             map.put("Lon", longitude);
             mDatabaseReference.setValue(map);
 */
-
             UploadTask uploadTask = storageReference.putBytes(dataByte);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -262,7 +260,6 @@ public class CameraFragment extends Fragment {
             map.put("Lon", longitude);
             mDatabaseReference.setValue(map);
             */
-
         }
     }
 

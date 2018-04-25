@@ -6,19 +6,20 @@ import com.google.maps.android.clustering.ClusterItem;
 public class MyItem implements ClusterItem{
 
     //https://developers.google.com/maps/documentation/android-api/utility/marker-clustering
-    private final LatLng mPosition;
-    private final String mTitle;
-    private final String mSnippet;
+    private LatLng mPosition;
+    private String mTitle;
+    private String mSnippet;
 
     public MyItem(double lat, double lng) {
         mPosition = new LatLng(lat, lng);
     }
 
-    public MyItem(LatLng position, String title, String snippet) {
-        mPosition = position;
+    public MyItem(double lat, double lng, String title, String snippet) {
+        mPosition = new LatLng(lat, lng);
         mTitle = title;
         mSnippet = snippet;
     }
+
 
     @Override
     public LatLng getPosition() {

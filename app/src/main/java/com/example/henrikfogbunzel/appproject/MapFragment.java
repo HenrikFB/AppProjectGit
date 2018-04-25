@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.example.henrikfogbunzel.appproject.adaptors.CustomInfoWindowAdapter;
 import com.example.henrikfogbunzel.appproject.googleSamples.PlaceAutocompleteAdapter;
 import com.example.henrikfogbunzel.appproject.model.ImagesModel;
+import com.example.henrikfogbunzel.appproject.model.MyItem;
 import com.example.henrikfogbunzel.appproject.model.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -69,10 +71,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -87,13 +92,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //vars
     private Boolean mLocationPermissionsGranted = false;
     private static final int ERROR_DIALOG_REQUEST = 9001;
+
+    private ClusterManager<MyItem> mClusterManager;//skal slette
+
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    Marker mMarker;
+    private final List<Marker> mMarkerList = new ArrayList<Marker>();
+
+    //firebase
     private FirebaseAuth auth;
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mDatabaseReference;
-
 
     String imgUIIDString;
 
@@ -132,54 +143,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ImagesModel imagesModel = dataSnapshot.getValue(ImagesModel.class);
-                //System.out.println(imagesModel.getLongitude());
-                //System.out.println(imagesModel.getLattitude());
 
-                /*
-
-                URL url = new URL("http://load.image/from/url");
-                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
-                map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-                 */
-/*
-                boolean condition = true;
-                while(condition) {
-                    condition= false;
-                    Bitmap bmp;
-                    try {
-                        URL url = new URL(imagesModel.getImageUriString());
-                        bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        Double lat = Double.parseDouble(imagesModel.getLattitude());
-                        Double lon = Double.parseDouble(imagesModel.getLongitude());
-
-                        LatLng newLocation = new LatLng(lat, lon);
-                        mMap.addMarker(new MarkerOptions()
-                                .position(newLocation)
-                                .title(dataSnapshot.getKey())
-                                .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                */
 
                Double lat = Double.parseDouble(imagesModel.getLattitude());
                Double lon = Double.parseDouble(imagesModel.getLongitude());
 
+               //https://stackoverflow.com/questions/43127222/set-text-to-textview-if-an-image-has-been-selected-from-gallery
+                //ikke prøvet.
+/*
+                View v = LayoutInflater.from(getContext()).inflate(R.layout.custom_info_window, null);
+                ImageView img = (ImageView) v.findViewById(R.id.img);
+                String uriString = imagesModel.getImageUriString();
+                Uri fileUri = Uri.parse(uriString);
+                img.setImageURI(fileUri);
+*/
                 LatLng newLocation = new LatLng(lat, lon);
-                mMap.addMarker(new MarkerOptions()
+                mMarker = mMap.addMarker(new MarkerOptions()
                         .position(newLocation)
                         .title(dataSnapshot.getKey()));
                         //.icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-
             }
-
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -201,24 +184,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-
-        /*
-        ValueEventListener imagesListener = new ValueEventListener() {
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
+/*
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ImagesModel imagesModel = dataSnapshot.getValue(ImagesModel.class);
-                System.out.println(imagesModel);
+            public void onInfoWindowClick(Marker marker) {
+                Toast.makeText(getContext(), "Info window clicked", Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadImagesModel:onCancelled", databaseError.toException());
-            }
-        };
-        mDatabaseReference.addValueEventListener(imagesListener);
-        */
-
+        });
+*/
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
 
@@ -235,7 +209,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMap.setMyLocationEnabled(true);
             //My search bar block it anyway and make it later as custom icon.
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
         }
     }
 
@@ -344,8 +317,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     }
-
-
-
 }
 

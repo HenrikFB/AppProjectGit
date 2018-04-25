@@ -65,7 +65,4 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             imageView = itemView.findViewById(R.id.image_view_upload);
         }
     }
-
-
-
 }
