@@ -23,6 +23,8 @@ public class ImagesModel {
     private String lattitude;
     private String longitude;
 
+    private String mKey;
+
     public ImagesModel(String imageUriString, String imgUIIDString, String lattitude, String longitude) {
         this.imageUriString = imageUriString;
         this.imgUIIDString = imgUIIDString;
@@ -66,18 +68,14 @@ public class ImagesModel {
         this.longitude = longitude;
     }
 
-    /*
-    //@Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("URI",  imageUriString);
-        result.put("UUID", imgUIIDString);
-        result.put("Lat", lattitude);
-        result.put("Lon", longitude);
+  @Exclude
+    public String getKey(){
+        return mKey;
+  }
 
-        return result;
-    }
-
-    */
+  @Exclude
+    public void setKey(String key){
+        mKey = key;
+  }
 
 }
