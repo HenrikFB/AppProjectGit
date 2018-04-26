@@ -15,6 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -26,10 +29,9 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         setContentView(R.layout.activity_profile);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
-        //((AppCompatActivity)FragmentActivity()).setSupportActionBar(toolbar);
-        //((AppCompatActivity)getApplicationContext()).setSupportActionBar(toolbar);
+        //((AppCompatActivity)getApplication()).setSupportActionBar(toolbar);
         //((AppCompatActivity)getApplicationContext()).setSupportActionBar(toolbar);
 
 
