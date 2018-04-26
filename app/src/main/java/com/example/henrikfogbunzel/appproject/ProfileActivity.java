@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ProfileActivity extends FragmentActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class ProfileActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +26,10 @@ public class ProfileActivity extends FragmentActivity implements BottomNavigatio
         setContentView(R.layout.activity_profile);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        ((AppCompatActivity)FragmentActivity()).setSupportActionBar(toolbar);
+        //((AppCompatActivity)FragmentActivity()).setSupportActionBar(toolbar);
+        //((AppCompatActivity)getApplicationContext()).setSupportActionBar(toolbar);
         //((AppCompatActivity)getApplicationContext()).setSupportActionBar(toolbar);
 
 
