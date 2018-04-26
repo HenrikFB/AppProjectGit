@@ -20,6 +20,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     -->
+    
+    <!--for menu -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!--for fragment and bottom fragment -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
