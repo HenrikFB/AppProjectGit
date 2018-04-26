@@ -36,11 +36,17 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
 
         final String uriFromTitle = marker.getTitle();
         //Picasso.get().load(uriFromTitle).fit().centerCrop().into(img);
+       // Picasso.get().load(uriFromTitle).fit().into(img);
+        Picasso.get().load(uriFromTitle).into(img);
 
-        //Uri fileUri = Uri.parse(uriFromTitle);
-        //img.setImageURI(fileUri);
-        Picasso.get().load(uriFromTitle).fit().centerCrop().into(img);
-/*
+
+        //final String stringUriFromTitle = marker.getTitle();
+        //Uri uri = Uri.parse(stringUriFromTitle);
+        //Picasso.get().load(uri).fit().centerCrop().into(img);
+        //img.setImageURI(uri);
+
+
+        /*
         String uriString = mImagesModel.getImageUriString();
         Uri fileUri = Uri.parse(uriFromTitle);
         img.setImageURI(fileUri);

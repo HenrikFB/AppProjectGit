@@ -160,7 +160,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng newLocation = new LatLng(lat, lon);
                 mMarker = mMap.addMarker(new MarkerOptions()
                         .position(newLocation)
-                        .title(dataSnapshot.getKey()));
+                        //.title(dataSnapshot.getKey()));
+                        .title(imagesModel.getImageUriString()));
                         //.icon(BitmapDescriptorFactory.fromBitmap(bmp)));
             }
 
