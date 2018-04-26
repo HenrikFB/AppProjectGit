@@ -119,11 +119,12 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void startProfileActivity() {
+        finish();
         Intent startProfileActivityIntent = new Intent(SignUpActivity.this, ProfileActivity.class);
         startProfileActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(startProfileActivityIntent, REQ_PROFILE);
     }
-/*
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -132,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
     }
-
+/*
     private void loadUserInformation(){
         FirebaseUser user = mAuth.getCurrentUser();
 

@@ -123,12 +123,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startProfileActivity() {
+        finish();
         Intent startProfileActivityIntent = new Intent(MainActivity.this, ProfileActivity.class);
         startProfileActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(startProfileActivityIntent, REQ_PROFILE);
     }
 
     private void startSignUpActivity() {
+        finish();
         Intent startSignUpAcitivityIntent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivityForResult(startSignUpAcitivityIntent, REQ_SIGNUP);
     }
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putString("text", mainEditTextEmail.getText().toString());
     }
 */
-    /*
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -149,5 +151,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    */
+
 }
