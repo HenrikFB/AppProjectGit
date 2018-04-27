@@ -1,5 +1,7 @@
 package com.example.henrikfogbunzel.appproject;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,7 +109,28 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
 
     @Override
     public void onWhatEverClick(int position) {
-        Toast.makeText(getContext(), "onWhatEver " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "onWhatEver " + position, Toast.LENGTH_SHORT).show();
+        ImagesModel seleectedItem = mImagesModels.get(position);
+        String latValue = seleectedItem.getLattitude();
+        String lngValue = seleectedItem.getLongitude();
+        Toast.makeText(getContext(), "onWhatEver " + position + " " + latValue + " " + lngValue, Toast.LENGTH_SHORT).show();
+
+
+        /*
+        Fragment fragment = new Fragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("latValue", latValue);
+        bundle.putString("lngValue", lngValue);
+        fragment.setArguments(bundle);
+        */
+
+        //Context context = getView().getContext();
+        //Intent intent = new Intent(context, MapFragment.class);
+        //intent.putExtra("latValue", latValue);
+        //intent.putExtra("latValue", latValue);
+        //context.startActivity(intent);
+
+
     }
 
     @Override

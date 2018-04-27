@@ -2,6 +2,7 @@ package com.example.henrikfogbunzel.appproject.adaptors;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
+
+    /*
+    google searh:picasso InfoWindowAdapter
+    for fikse dobbelt klik:
+    https://stackoverflow.com/questions/32725753/picasso-image-loading-issue-in-googlemap-infowindowadapter
+
+     */
+
 
     //private final View mWindow;
     private Context mContext;
@@ -38,12 +47,13 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
         //Picasso.get().load(uriFromTitle).fit().centerCrop().into(img);
        // Picasso.get().load(uriFromTitle).fit().into(img);
         Picasso.get().load(uriFromTitle).into(img);
-
+        Log.d("adf", ""+img.getHeight());
 
         //final String stringUriFromTitle = marker.getTitle();
         //Uri uri = Uri.parse(stringUriFromTitle);
         //Picasso.get().load(uri).fit().centerCrop().into(img);
         //img.setImageURI(uri);
+
 
 
         /*
@@ -53,7 +63,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
 */
         return v;
         //Picasso.get().load(mImagesModel.getImageUriString()).fit().centerCrop().into(img);
-
         //final String title = marker.getTitle();
     }
 

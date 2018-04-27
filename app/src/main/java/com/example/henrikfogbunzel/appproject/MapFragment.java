@@ -107,6 +107,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     DatabaseReference mDatabaseReference;
 
     String imgUIIDString;
+    String latValue;
+    String lngValue;
 
     @Nullable
     @Override
@@ -117,6 +119,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         isServicesOK();
         getLocationPermission();
 
+        //receiving from GalleryFragment;
+        /*
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            String latReceived = bundle.getString("latValue", latValue);
+            String lngReceived = bundle.getString("lngValue", lngValue);
+        }
+        */
         return view;
     }
 
