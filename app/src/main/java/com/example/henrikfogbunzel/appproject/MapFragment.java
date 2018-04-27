@@ -107,8 +107,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     DatabaseReference mDatabaseReference;
 
     String imgUIIDString;
+
     String latValue;
     String lngValue;
+    Bundle bundle;
+    Boolean flag;
 
     @Nullable
     @Override
@@ -119,14 +122,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         isServicesOK();
         getLocationPermission();
 
-        //receiving from GalleryFragment;
-        /*
-        Bundle bundle = this.getArguments();
-        if(bundle != null){
-            String latReceived = bundle.getString("latValue", latValue);
-            String lngReceived = bundle.getString("lngValue", lngValue);
-        }
-        */
+
+
+        if(bundle == null) {
+            bundle = this.getArguments();
+
+            latValue = bundle.getString("latValue");
+            lngValue = bundle.getString("lngValue");
+            flag = bundle.getBoolean("flagValue");
+            Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
+
+           // flag = true;
+
+        } //else {
+            //flag = false;
+       // }
+
         return view;
     }
 
@@ -173,6 +184,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         //.title(dataSnapshot.getKey()));
                         .title(imagesModel.getImageUriString()));
                         //.icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+                        //prøv evt: https://developer.android.com/reference/android/widget/ImageView#setImageIcon(android.graphics.drawable.Icon)
             }
 
             @Override
@@ -205,8 +217,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 */
         if (mLocationPermissionsGranted) {
-            getDeviceLocation();
-
+            if(flag){
+                moveCamerFromGallery();
+            } else {
+                getDeviceLocation();
+            }
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -221,6 +236,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             //My search bar block it anyway and make it later as custom icon.
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
+    }
+
+    private void moveCamerFromGallery() {
+        Log.d(TAG, "moveCamerFromGallery: had been called" );
+        Double lat = Double.parseDouble(latValue);
+        Double lon = Double.parseDouble(lngValue);
+        moveCamera(new LatLng(lat, lon), DEFAULT_ZOOM);
+        flag = false;
+        //LatLng latLngBundle = new LatLng(lat, lon);
+        //moveCamera(latLngBundle,DEFAULT_ZOOM);
+//            moveCamera(new LatLng(lat, lon), DEFAULT_ZOOM);
+            /*
+            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
+             */
     }
 
     private void initMap() {
@@ -258,11 +287,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void moveCamera(LatLng latLng, float zoom) {
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-
         //mMap.clear();
-
-
-
     }
 
     private boolean isServicesOK(){

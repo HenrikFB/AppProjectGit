@@ -1,5 +1,6 @@
 package com.example.henrikfogbunzel.appproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,6 +48,34 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
     private static final String TAG = "CalleryFragment";
 
     String imgUIIDString;
+    String latValue;
+    String lngValue;
+    Boolean flag;
+
+
+
+    OnMessageSendListener messageSendListener;
+    public interface OnMessageSendListener
+    {
+        public void onMeassageSend(String latValue, String lngValue, Boolean flag);
+    }
+
+    public GalleryFragment(){
+        //empty constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = (Activity) context;
+        try{
+            messageSendListener = (OnMessageSendListener) activity;
+        }
+        catch (ClassCastException e){
+            throw new ClassCastException(activity.toString() + "must implement onMessageSend...");
+        }
+
+    }
 
     @Nullable
     @Override
@@ -110,27 +139,12 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
     @Override
     public void onWhatEverClick(int position) {
         //Toast.makeText(getContext(), "onWhatEver " + position, Toast.LENGTH_SHORT).show();
-        ImagesModel seleectedItem = mImagesModels.get(position);
-        String latValue = seleectedItem.getLattitude();
-        String lngValue = seleectedItem.getLongitude();
-        Toast.makeText(getContext(), "onWhatEver " + position + " " + latValue + " " + lngValue, Toast.LENGTH_SHORT).show();
-
-
-        /*
-        Fragment fragment = new Fragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("latValue", latValue);
-        bundle.putString("lngValue", lngValue);
-        fragment.setArguments(bundle);
-        */
-
-        //Context context = getView().getContext();
-        //Intent intent = new Intent(context, MapFragment.class);
-        //intent.putExtra("latValue", latValue);
-        //intent.putExtra("latValue", latValue);
-        //context.startActivity(intent);
-
-
+        ImagesModel selectedItem = mImagesModels.get(position);
+         latValue = selectedItem.getLattitude();
+         lngValue = selectedItem.getLongitude();
+         Toast.makeText(getContext(), "onWhatEver " + position + " " + latValue + " " + lngValue, Toast.LENGTH_SHORT).show();
+         flag = true;
+         messageSendListener.onMeassageSend(latValue, lngValue, flag);
     }
 
     @Override

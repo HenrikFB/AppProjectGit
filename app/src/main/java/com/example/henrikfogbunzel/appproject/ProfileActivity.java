@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
@@ -21,7 +22,7 @@ import android.support.v7.widget.Toolbar;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ProfileActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class ProfileActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, GalleryFragment.OnMessageSendListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,5 +111,20 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         return loadFragment(fragment);
        //return loadMapFragment(supportMapFragment);
 
+    }
+
+    @Override
+    public void onMeassageSend(String latValue, String lngValue, Boolean flag) {
+
+        MapFragment mapFragment = new MapFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("latValue", latValue);
+        bundle.putString("lngValue", lngValue);
+        bundle.putBoolean("flagValue", flag);
+        mapFragment.setArguments(bundle);
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mapFragment, null);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
