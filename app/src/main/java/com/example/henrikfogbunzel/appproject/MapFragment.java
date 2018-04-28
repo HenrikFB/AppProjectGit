@@ -110,7 +110,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     String latValue;
     String lngValue;
-    Bundle bundle;
+   // Bundle bundle;
     Boolean flag;
 
     @Nullable
@@ -122,22 +122,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         isServicesOK();
         getLocationPermission();
 
+            if (savedInstanceState == null) {
+                //bundle = this.getArguments();
+                Bundle bundle = this.getArguments();
 
-
-        if(bundle == null) {
-            bundle = this.getArguments();
-
-            latValue = bundle.getString("latValue");
-            lngValue = bundle.getString("lngValue");
-            flag = bundle.getBoolean("flagValue");
-            Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
-
-           // flag = true;
-
-        } //else {
-            //flag = false;
-       // }
-
+                try {
+                    latValue = bundle.getString("latValue");
+                    lngValue = bundle.getString("lngValue");
+                    flag = bundle.getBoolean("flagValue");
+                    Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
+                }catch (NullPointerException e) {
+                    System.out.print("Caught the NullPointerException");
+                    flag = false;
+                }
+            } else{
+                flag = false;
+            }
+            
         return view;
     }
 
