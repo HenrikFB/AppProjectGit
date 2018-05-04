@@ -43,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         loadFragment(new CameraFragment());
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 

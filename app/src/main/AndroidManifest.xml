@@ -17,6 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".services.GeofenceTransitionsIntentService"/>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -39,6 +41,8 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile">
         </activity>
+
     </application>
+
 
 </manifest>
