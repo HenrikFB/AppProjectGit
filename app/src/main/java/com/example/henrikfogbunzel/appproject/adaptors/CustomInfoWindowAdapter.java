@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.henrikfogbunzel.appproject.R;
+import com.example.henrikfogbunzel.appproject.callback.MarkerCallBack;
 import com.example.henrikfogbunzel.appproject.model.ImagesModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -41,29 +42,16 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
     public View getInfoWindow(Marker marker) {
         View v = inflater.inflate(R.layout.custom_info_window, null);
         ImageView img = (ImageView) v.findViewById(R.id.img);
-        //((ImageView) view.findViewById(R.id.img).setImageResource(mImagesModel.getImageUriString()));
 
         final String uriFromTitle = marker.getTitle();
-        //Picasso.get().load(uriFromTitle).fit().centerCrop().into(img);
-       // Picasso.get().load(uriFromTitle).fit().into(img);
-        Picasso.get().load(uriFromTitle).into(img);
+
+        //Picasso.get().load(uriFromTitle).into(img);
+        Picasso.get().load(uriFromTitle).into(img, new MarkerCallBack(marker,uriFromTitle, img));
         Log.d("adf", ""+img.getHeight());
 
-        //final String stringUriFromTitle = marker.getTitle();
-        //Uri uri = Uri.parse(stringUriFromTitle);
-        //Picasso.get().load(uri).fit().centerCrop().into(img);
-        //img.setImageURI(uri);
 
-
-
-        /*
-        String uriString = mImagesModel.getImageUriString();
-        Uri fileUri = Uri.parse(uriFromTitle);
-        img.setImageURI(fileUri);
-*/
         return v;
-        //Picasso.get().load(mImagesModel.getImageUriString()).fit().centerCrop().into(img);
-        //final String title = marker.getTitle();
+
     }
 
     @Override
