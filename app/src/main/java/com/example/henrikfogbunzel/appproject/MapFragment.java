@@ -93,7 +93,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Boolean mLocationPermissionsGranted = false;
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
-    private ClusterManager<MyItem> mClusterManager;//skal slette
+    //private ClusterManager<MyItem> mClusterManager;//skal slette
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -199,10 +199,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng newLocation = new LatLng(lat, lon);
                 mMarker = mMap.addMarker(new MarkerOptions()
                         .position(newLocation)
-                        //.title(dataSnapshot.getKey()));
                         .title(imagesModel.getImageUriString()));
-                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-                        //prøv evt: https://developer.android.com/reference/android/widget/ImageView#setImageIcon(android.graphics.drawable.Icon)
+               // mMarkerList.add()
+
             }
 
             @Override
