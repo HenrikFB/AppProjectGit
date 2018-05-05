@@ -124,6 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
 
+        /*
         if(bundle == null) {
             bundle = this.getArguments();
 
@@ -134,9 +135,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
            // flag = true;
 
-        } //else {
-            //flag = false;
-       // }
+        }
+        */
+
+        if (savedInstanceState == null) {
+            //bundle = this.getArguments();
+            Bundle bundle = this.getArguments();
+
+            try {
+                latValue = bundle.getString("latValue");
+                lngValue = bundle.getString("lngValue");
+                flag = bundle.getBoolean("flagValue");
+                Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
+            } catch (NullPointerException e) {
+                System.out.print("Caught the NullPointerException");
+                flag = false;
+            }
+        } else {
+            flag = false;
+        }
+
 
         return view;
     }
