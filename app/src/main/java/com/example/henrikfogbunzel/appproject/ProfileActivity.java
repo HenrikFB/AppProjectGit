@@ -1,5 +1,6 @@
 package com.example.henrikfogbunzel.appproject;
 
+import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -15,10 +16,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+
+
+
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentTransaction;
 //import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +40,10 @@ import com.example.henrikfogbunzel.appproject.services.ProximityIntentReceiver;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+
+//fragment manager
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +65,33 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
 
     private LocationManager locationManager;
 
+    //handle orientation change
+    private static final String TAG_RETAINED_FRAGMENT = "RetainedFragment";
+
+    private MapFragment mMapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
+        //FragmentManager fm = getFragmentManager();
+        //FragmentManager fm = getSupportFragmentManager();
+        mMapFragment = (MapFragment) fm.findFragmentByTag(TAG_RETAINED_FRAGMENT);
+
+
+
+        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(TAG_RETAINED_FRAGMENT);
+
+
+
+        if(mMapFragment == null){
+            mMapFragment = new MapFragment();
+            fm.beginTransaction().add(mMapFragment, TAG_RETAINED_FRAGMENT).commit();
+        }
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -68,7 +100,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
-        loadFragment(new CameraFragment());
+        //loadFragment(new CameraFragment());
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -83,6 +115,15 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, new MyLocationListener());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isFinishing()){
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().remove(mMapFragment).commit();
+        }
     }
 
     //normal from from point where you save the pointer/marker from lat and lon
@@ -214,7 +255,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         }
         return false;
     }
-
+/*
     private boolean loadMapFragment(SupportMapFragment supportMapFragment){
         if(supportMapFragment != null) {
             getSupportFragmentManager()
@@ -225,7 +266,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         }
         return  false;
     }
-
+*/
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 

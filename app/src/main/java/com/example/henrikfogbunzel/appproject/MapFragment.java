@@ -122,6 +122,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //return inflater.inflate(R.layout.fragment_map, null);
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        setRetainInstance(true);
+
         isServicesOK();
         getLocationPermission();
 
