@@ -3,6 +3,8 @@ package com.example.henrikfogbunzel.appproject;
 import android.*;
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -98,8 +100,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-    Marker mMarker;
-    private final List<Marker> mMarkerList = new ArrayList<Marker>();
+    //Marker mMarker;
+    List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
+
 
     //firebase
     private FirebaseAuth auth;
@@ -187,20 +190,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                Double lat = Double.parseDouble(imagesModel.getLattitude());
                Double lon = Double.parseDouble(imagesModel.getLongitude());
 
-               //https://stackoverflow.com/questions/43127222/set-text-to-textview-if-an-image-has-been-selected-from-gallery
-                //ikke prøvet.
-/*
-                View v = LayoutInflater.from(getContext()).inflate(R.layout.custom_info_window, null);
-                ImageView img = (ImageView) v.findViewById(R.id.img);
-                String uriString = imagesModel.getImageUriString();
-                Uri fileUri = Uri.parse(uriString);
-                img.setImageURI(fileUri);
-*/
+
                 LatLng newLocation = new LatLng(lat, lon);
+                /*
                 mMarker = mMap.addMarker(new MarkerOptions()
                         .position(newLocation)
                         .title(imagesModel.getImageUriString()));
-               // mMarkerList.add()
+                 */
+
+                //https://stackoverflow.com/questions/38100291/google-maps-save-markers-in-an-array-and-then-list-them
+
+
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(newLocation)
+                        .title(imagesModel.getImageUriString());
+                Marker m = mMap.addMarker(markerOptions);
+                markers.add(markerOptions);
+
+                MarkerOptions[] markersArray = markers.toArray(new MarkerOptions[markers.size()]);
+                passData(markersArray);
+
+
+                /*
+                //ProfileActivity profileActivity = new ProfileActivity();
+                ProfileActivity profileActivity = new ProfileActivity();
+                if(lat != null && lon != null) {
+                    profileActivity.addProximityAlert(lat, lon);
+
+                    float latf = lat.floatValue();
+                    float lonf = lon.floatValue();
+
+                    profileActivity.saveCoordinatesInPreferences(latf, lonf);
+
+
+                }
+                //new ProfileActivity();
+                */
+
 
             }
 
@@ -370,5 +396,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     }
+
+    OnMarkerDataPass mOnMarkerDataPass;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mOnMarkerDataPass = (OnMarkerDataPass) context;
+    }
+    public void passData(MarkerOptions[] markersArray){
+        mOnMarkerDataPass.onMarkerDataPass(markersArray);
+    }
+
+//https://stackoverflow.com/questions/9343241/passing-data-between-a-fragment-and-its-container-activity
+
+    public interface  OnMarkerDataPass{
+        public void onMarkerDataPass(MarkerOptions[] markersArray);
+    }
+
 }
 

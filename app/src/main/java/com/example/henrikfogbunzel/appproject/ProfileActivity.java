@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -20,6 +21,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,9 +33,13 @@ import android.widget.Toast;
 
 import com.example.henrikfogbunzel.appproject.services.ProximityIntentReceiver;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ProfileActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, GalleryFragment.OnMessageSendListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProfileActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, GalleryFragment.OnMessageSendListener, MapFragment.OnMarkerDataPass {
 
     private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
     private static final long MINIMUM_TIME_BETWEEN_UPDATE = 1000; // in Milliseconds
@@ -43,6 +49,8 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
 
     private static final String POINT_LATITUDE_KEY = "POINT_LATITUDE_KEY";
     private static final String POINT_LONGITUDE_KEY = "POINT_LONGITUDE_KEY";
+
+    List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
 
     //private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
 
@@ -77,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, new MyLocationListener());
     }
 
-    //normal from from pointen where you save the pointer/marker from lat and lon
+    //normal from from point where you save the pointer/marker from lat and lon
     private void saveProximityAlertPoint() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -89,39 +97,44 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location == null) {
-            Toast.makeText(this, "No last known location. Aborting...", Toast.LENGTH_LONG).show();
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+       // if (location == null) {
+         //   Toast.makeText(this, "No last known location. Aborting...", Toast.LENGTH_LONG).show();
 
-            return;
-        }
-        saveCoordinatesInPreferences((float) location.getLatitude(), (float) location.getLongitude());
-        addProximityAlert(location.getLatitude(), location.getLongitude());
+           // return;
 
-    }
+        //}
 
-    private void addProximityAlert(double latitude, double longitude) {
-        Intent intent = new Intent();///need to change to the real things. Check geofending thing.
-        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.addProximityAlert(latitude, longitude, POINT_RADIUS, PROX_ALERT_EXPIRATION, proximityIntent);
-
-        IntentFilter filter = new IntentFilter(); //change..
-        registerReceiver(new ProximityIntentReceiver(), filter);
+        //saveCoordinatesInPreferences((float) location.getLatitude(), (float) location.getLongitude());
+        //addProximityAlert(location.getLatitude(), location.getLongitude());
 
     }
 
-    private void saveCoordinatesInPreferences(float latitude, float longitude) {
+    public void addProximityAlert(double latitude, double longitude) {
+        //Intent intent = new Intent(getApplicationContext(),ProximityIntentReceiver.class );///need to change to the real things. Check geofending thing.
+        //if(intent != null) {
+          //  PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+           // locationManager.addProximityAlert(latitude, longitude, POINT_RADIUS, PROX_ALERT_EXPIRATION, proximityIntent);
+
+          //  IntentFilter filter = new IntentFilter(); //change..
+          //  registerReceiver(new ProximityIntentReceiver(), filter);
+        //}
+
+    }
+
+    public void saveCoordinatesInPreferences(float latitude, float longitude) {
         SharedPreferences prefs = this.getSharedPreferences(getClass().getSimpleName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.putFloat(POINT_LONGITUDE_KEY, latitude);
@@ -132,6 +145,11 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
 
     //Normal from button where you find coordinates.
     private void populateCoordinatesFromLastKnownLocation() {
+        Intent intent = getIntent();
+        //MarkerOptions[] markerArray = intent.getStringArrayExtra("markers");
+        MarkerOptions[] markerArray;
+
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -182,9 +200,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
                 finish();
                 startActivity(new Intent(this, MainActivity.class));
                 break;
-
         }
-
         return true;
     }
 
@@ -247,6 +263,11 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mapFragment, null);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onMarkerDataPass(MarkerOptions[] markersArray) {
+        Log.d("onMarkerDataPass","array data: "+ markersArray );
     }
 
     public class MyLocationListener implements LocationListener{

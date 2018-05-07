@@ -7,7 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import com.example.henrikfogbunzel.appproject.ProfileActivity;
 
 public class ProximityIntentReceiver extends BroadcastReceiver {
 
@@ -30,15 +33,26 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, null, 0);
 
-    //    Notification notification = createNotification();
+        //Notification notification = createNotification();
         //notification.setLatestEventInfo(context,
                // "Proximity Alert!", "You are near your point of interest.", pendingIntent);
 
       //  notificationManager.notify(NOTIFICATION_ID, notification);
 
+        //Intent intent = new Intent(context, ProfileActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+       // sendNotification("title", "message", intent, 0);
+
+
     }
 
-//    private Notification createNotification() { ;
+    private void sendNotification(String title, String message, Intent intent, int i) {
+        //Intent notificationIntent = new Intent(ge)
+    //    NotificationCompat.Builder  notificationBuilder = new NotificationCompat.Builder()
+                //.setSmallIcon();
+    }
 
-  //  }
+
+//    private Notification createNotification() { ;
+    // }
 }

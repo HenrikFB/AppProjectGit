@@ -17,7 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<!--
+        <receiver android:name=".services.ProximityIntentReceiver">
+            <intent-filter>
 
+            </intent-filter>
+        </receiver>
+-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDNmtRVOYPdm1xKdL0Z1gdkZ_ytV7Id_5U"/>
