@@ -122,26 +122,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //return inflater.inflate(R.layout.fragment_map, null);
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        setRetainInstance(true);
+        //setRetainInstance(true);
 
         isServicesOK();
         getLocationPermission();
 
-
-
-        /*
-        if(bundle == null) {
-            bundle = this.getArguments();
-
-            latValue = bundle.getString("latValue");
-            lngValue = bundle.getString("lngValue");
-            flag = bundle.getBoolean("flagValue");
-            Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
-
-           // flag = true;
-
-        }
-        */
 
         if (savedInstanceState == null) {
             //bundle = this.getArguments();
@@ -172,8 +157,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         String userID = user.getUid();
-
-        //mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/" + "/"+imgUIIDString+"/");
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/");
@@ -210,25 +193,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 markers.add(markerOptions);
 
                 MarkerOptions[] markersArray = markers.toArray(new MarkerOptions[markers.size()]);
-                passData(markersArray);
+                //passData(markersArray);
+                passData(lat,lon);
 
+                float latf = lat.floatValue();
+                float lonf = lon.floatValue();
+                passDataReferencesFlot(latf, lonf);
 
-                /*
                 //ProfileActivity profileActivity = new ProfileActivity();
+               /*
                 ProfileActivity profileActivity = new ProfileActivity();
                 if(lat != null && lon != null) {
-                    profileActivity.addProximityAlert(lat, lon);
+                    //profileActivity.addProximityAlert(lat, lon);
 
                     float latf = lat.floatValue();
                     float lonf = lon.floatValue();
 
-                    profileActivity.saveCoordinatesInPreferences(latf, lonf);
-
-
+                    //profileActivity.saveCoordinatesInPreferences(latf, lonf);
                 }
                 //new ProfileActivity();
-                */
 
+                 */
 
             }
 
@@ -399,6 +384,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+
+
+    OnMarkerDataPass mOnMarkerDataPass;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mOnMarkerDataPass = (OnMarkerDataPass) context;
+    }
+    public void passData(Double lat, Double lon){
+        mOnMarkerDataPass.onMarkerDataPass(lat, lon);
+    }
+    public void passDataReferencesFlot(Float latf, Float lonf){
+        mOnMarkerDataPass.floatReferenceDataPas(latf,lonf);
+    }
+
+//https://stackoverflow.com/questions/9343241/passing-data-between-a-fragment-and-its-container-activity
+
+    public interface  OnMarkerDataPass{
+        public void onMarkerDataPass(Double lat, Double lon);
+        public void floatReferenceDataPas(Float latf, Float lonf);
+    }
+
+
+    /*
     OnMarkerDataPass mOnMarkerDataPass;
 
     @Override
@@ -415,6 +425,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public interface  OnMarkerDataPass{
         public void onMarkerDataPass(MarkerOptions[] markersArray);
     }
+    */
 
 }
 

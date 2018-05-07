@@ -61,37 +61,35 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
 
     List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
 
-    //private static final long MINIMUM_DISTANCECHANGE_FOR_UPDATE = 1; // in Meters
 
     private LocationManager locationManager;
 
     //handle orientation change
     private static final String TAG_RETAINED_FRAGMENT = "RetainedFragment";
-
     private MapFragment mMapFragment;
+
+    private Context mContext;
+
+    private ProfileActivity mProfileActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //FragmentManager fm = getFragmentManager();
-        //FragmentManager fm = getSupportFragmentManager();
-        mMapFragment = (MapFragment) fm.findFragmentByTag(TAG_RETAINED_FRAGMENT);
+        mContext = getApplicationContext();
+        mProfileActivity = new ProfileActivity();
 
 
 
-        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(TAG_RETAINED_FRAGMENT);
-
-
-
+       // android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        //mMapFragment = (MapFragment) fm.findFragmentByTag(TAG_RETAINED_FRAGMENT);
+/*
         if(mMapFragment == null){
             mMapFragment = new MapFragment();
             fm.beginTransaction().add(mMapFragment, TAG_RETAINED_FRAGMENT).commit();
         }
-
+*/
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -116,7 +114,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATE, MINIMUM_DISTANCECHANGE_FOR_UPDATE, new MyLocationListener());
     }
-
+/*
     @Override
     protected void onPause() {
         super.onPause();
@@ -125,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
             fm.beginTransaction().remove(mMapFragment).commit();
         }
     }
-
+*/
     //normal from from point where you save the pointer/marker from lat and lon
     private void saveProximityAlertPoint() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -153,9 +151,8 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
     }
 
     public void addProximityAlert(double latitude, double longitude) {
-        //Intent intent = new Intent(getApplicationContext(),ProximityIntentReceiver.class );///need to change to the real things. Check geofending thing.
-        //if(intent != null) {
-          //  PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        Intent intent = new Intent(this,ProximityIntentReceiver.class );
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
@@ -167,11 +164,11 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-           // locationManager.addProximityAlert(latitude, longitude, POINT_RADIUS, PROX_ALERT_EXPIRATION, proximityIntent);
+           locationManager.addProximityAlert(latitude, longitude, POINT_RADIUS, PROX_ALERT_EXPIRATION, proximityIntent);
 
-          //  IntentFilter filter = new IntentFilter(); //change..
-          //  registerReceiver(new ProximityIntentReceiver(), filter);
-        //}
+           IntentFilter filter = new IntentFilter(); //change..
+           registerReceiver(new ProximityIntentReceiver(), filter);
+
 
     }
 
@@ -188,7 +185,8 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
     private void populateCoordinatesFromLastKnownLocation() {
         Intent intent = getIntent();
         //MarkerOptions[] markerArray = intent.getStringArrayExtra("markers");
-        MarkerOptions[] markerArray;
+        //MarkerOptions[] markerArray;
+
 
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -306,9 +304,23 @@ public class ProfileActivity extends AppCompatActivity implements BottomNavigati
         fragmentTransaction.commit();
     }
 
+    /*
     @Override
     public void onMarkerDataPass(MarkerOptions[] markersArray) {
         Log.d("onMarkerDataPass","array data: "+ markersArray );
+    }
+    */
+
+    @Override
+    public void onMarkerDataPass(Double lat, Double lon) {
+        Log.d("onMarkerDataPass", "coordinates in doubles: " + lat + lon);
+        addProximityAlert(lat, lon);
+    }
+
+    @Override
+    public void floatReferenceDataPas(Float latf, Float lonf) {
+        Log.d("onMarkerDataPass", "coordinates in floats: " + latf + lonf);
+        saveCoordinatesInPreferences(latf,lonf);
     }
 
     public class MyLocationListener implements LocationListener{

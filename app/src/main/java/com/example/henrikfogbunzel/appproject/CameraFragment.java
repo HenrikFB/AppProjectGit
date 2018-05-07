@@ -203,21 +203,12 @@ public class CameraFragment extends Fragment {
             UUID imgUUID = UUID.randomUUID();
             final String imgUIIDString = imgUUID.toString();
 
-            //StorageReference storageReference = mStorageReference.child("users/" + userID + "/" + UUID.randomUUID() );
-            //StorageReference storageReference = mStorageReference.child("users/" + userID + "/" + "/"+imgUUID+"/" + imgUUID );
 
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/"+imgUIIDString+"/");
 
             StorageReference storageReference = mStorageReference.child("users/" + userID + "/"+imgUIIDString+"/" + imgUUID);
-/*
-            Map<String, String> map = new HashMap<>();
-            map.put("URI",  imageUriString);
-            map.put("UUID", imgUIIDString);
-            map.put("Lat", lattitude);
-            map.put("Lon", longitude);
-            mDatabaseReference.setValue(map);
-*/
+
             UploadTask uploadTask = storageReference.putBytes(dataByte);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -242,24 +233,6 @@ public class CameraFragment extends Fragment {
             });
 
 
-
-            //String imageUriString = "";
-            //writeNewImages(imageUriString, imgUIIDString, lattitude, longitude);
-
-
-            //https://androidstudy.com/2017/04/17/firebase-realtime-database/
-            //ImagesModel imagesModel = new ImagesModel(imgUIIDString, imgUIIDString, lattitude, longitude);
-
-           // String imageUriString = mImageUri.toString();
-
-            /*
-            Map<String, String> map = new HashMap<>();
-            //map.put("URI",  imageUriString);
-            map.put("UUID", imgUIIDString);
-            map.put("Lat", lattitude);
-            map.put("Lon", longitude);
-            mDatabaseReference.setValue(map);
-            */
         }
     }
 
