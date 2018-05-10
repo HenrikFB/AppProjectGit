@@ -11,4 +11,10 @@
     <string name="signupBtnSignUp"> Registrere</string>
     <string name="signupBtnLogin"> Allerede Bruger ? Log ind</string>
 
+    <string name="title_gallery">Galleri</string>
+    <string name="title_camera">Kamera</string>
+    <string name="title_map">Map</string>
+
+    <string name="cameraBtnCapture">Tag et billede</string>
+
 </resources>

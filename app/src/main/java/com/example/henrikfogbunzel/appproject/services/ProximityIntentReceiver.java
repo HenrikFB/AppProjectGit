@@ -58,8 +58,6 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         intentNotification.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         sendNotification("title", "message", intentNotification, 0);
 
-
-
     }
 
     private void sendNotification(String title, String message, Intent intent, int i) {

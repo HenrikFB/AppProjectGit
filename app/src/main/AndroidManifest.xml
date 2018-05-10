@@ -47,6 +47,10 @@
             android:label="@string/title_activity_profile"
             android:configChanges="orientation|screenSize">
         </activity>
+        <service android:name=".services.LocationService"
+                 android:enabled="true"
+                 android:exported="true">
+        </service>
     </application>
 
 </manifest>

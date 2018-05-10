@@ -391,7 +391,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mOnMarkerDataPass = (OnMarkerDataPass) context;
+        context = this.getContext();
+        mOnMarkerDataPass = (OnMarkerDataPass)context;
     }
     public void passData(Double lat, Double lon){
         mOnMarkerDataPass.onMarkerDataPass(lat, lon);
@@ -406,26 +407,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void onMarkerDataPass(Double lat, Double lon);
         public void floatReferenceDataPas(Float latf, Float lonf);
     }
-
-
-    /*
-    OnMarkerDataPass mOnMarkerDataPass;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mOnMarkerDataPass = (OnMarkerDataPass) context;
-    }
-    public void passData(MarkerOptions[] markersArray){
-        mOnMarkerDataPass.onMarkerDataPass(markersArray);
-    }
-
-//https://stackoverflow.com/questions/9343241/passing-data-between-a-fragment-and-its-container-activity
-
-    public interface  OnMarkerDataPass{
-        public void onMarkerDataPass(MarkerOptions[] markersArray);
-    }
-    */
 
 }
 
