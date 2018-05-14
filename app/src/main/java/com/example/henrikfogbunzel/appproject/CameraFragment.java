@@ -1,5 +1,6 @@
 package com.example.henrikfogbunzel.appproject;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,6 +52,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class CameraFragment extends Fragment {
 
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 8;
     Button cameraBtnCapture;
     ImageView cameraImageView;
     ProgressBar progressBar;
@@ -107,12 +109,35 @@ public class CameraFragment extends Fragment {
                 }
 
                 //camera
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+
+                if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    invokeCamera();
+                } else {
+                    //if we not already have permission to invoke the camera
+                    String[] permissionRequest = {Manifest.permission.CAMERA};
+                    requestPermissions(permissionRequest, CAMERA_PERMISSION_REQUEST_CODE);
+                }
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == CAMERA_PERMISSION_REQUEST_CODE){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                invokeCamera();
+            } else{
+                Toast.makeText(getContext(), "Cannot take photo without permission", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void invokeCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
     }
 
     private void getLocation() {
@@ -158,7 +183,6 @@ public class CameraFragment extends Fragment {
                 Toast.makeText(getActivity(),"Unable to trace your location",Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     protected void buildAlertMessageNoGps() {

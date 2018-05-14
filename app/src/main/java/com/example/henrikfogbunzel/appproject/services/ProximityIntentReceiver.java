@@ -19,6 +19,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
     private static final int NOTIFICATION_ID = 1000;
 
+
     public ProximityIntentReceiver() {
     }
 
@@ -28,7 +29,13 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String key = LocationManager.KEY_PROXIMITY_ENTERING;
 
+
+
         mContext = context;
+
+        String notifycation_title = mContext.getResources().getString(R.string.notification_title);
+
+        String notifycation_content_text = mContext.getResources().getString(R.string.notification_contextText);
 
         Boolean entering =  intent.getBooleanExtra(key,false);
         if (entering) {
@@ -37,22 +44,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         else {
             Log.d(getClass().getSimpleName(), "exiting");
         }
-/*
-        NotificationManager notificationManager =
-             (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationChannel notificationChannel ) = notificationManager.getNotificationChannel("id");
-
-*/
-
-     //   PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, null, 0);
-
-
-        //Notification notification = createNotification();
-        //notification.setLatestEventInfo(context,
-        // "Proximity Alert!", "You are near your point of interest.", pendingIntent);
-
-      //  notificationManager.notify(NOTIFICATION_ID, notification);
 
         Intent intentNotification = new Intent(context, ProfileActivity.class);
         intentNotification.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -61,20 +53,13 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
     }
 
     private void sendNotification(String title, String message, Intent intent, int i) {
-        //Intent notificationIntent = new Intent(ge)
-    //    NotificationCompat.Builder  notificationBuilder = new NotificationCompat.Builder()
-                //.setSmallIcon();
 
-
-
-
-        String channelID = "channelID";
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setColor(Color.RED)
-                .setContentTitle(title)
-                .setContentText("Map");
-                //.setContentIntent()
+                .setContentTitle(mContext.getString(R.string.notification_title))
+                .setContentText(mContext.getString(R.string.notification_contextText));
+                //.setContentIntent();
 
 
         if(intent!=null) {
@@ -90,13 +75,5 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         notificationManager.notify(0, notificationBuilder.build());
 
     }
-
-/*
-  private void createNotification() {
-//      NotificationCompat.Builder
-      Intent notificationIntent = new Intent(this, ProfileActivity.class);
-  }
-*/
-
 
 }

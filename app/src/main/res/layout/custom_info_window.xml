@@ -14,12 +14,6 @@
               android:background="#fff"
     >
 
-    <TextView
-        android:layout_width="307dp"
-        android:id="@+id/txtInfo"
-        android:layout_height="match_parent"
-        android:text="hejhej"
-        />
 
     <ImageView
         android:id="@+id/img"

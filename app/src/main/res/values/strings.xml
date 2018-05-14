@@ -4,7 +4,7 @@
     <string name="google_maps_API_key">AIzaSyC80awLgWXYuz4axrXMC-7jJ_4zKhJ9Huk</string>
 -->
     <string name="google_maps_API_key">AIzaSyDNmtRVOYPdm1xKdL0Z1gdkZ_ytV7Id_5U</string>
-    <string name="app_name">AppProject</string>
+    <string name="app_name">YourMemories</string>
 
     <!--main activity-->
 
@@ -16,7 +16,7 @@
     <string name="signupTextViewHeader">Sign up here!</string>
     <string name="signupBtnSignUp"> Sign up</string>
     <string name="signupBtnLogin"> Already user? Login</string>
-    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile">YourMemories</string>
 
 
     <string name="title_gallery">Gallery</string>
@@ -24,6 +24,10 @@
     <string name="title_map">Map</string>
 
     <string name="cameraBtnCapture">Capture and upload</string>
+    <string name="notification_title">Close on a memory!</string>
+    <string name="notification_contextText">Push here for come back to your app</string>
+    <string name="floatingMenu_map">Find on map</string>
+    <string name="floatingMenu_deleteImg">Delete this image</string>
 
 
 </resources>

@@ -126,19 +126,6 @@ public class LocationService extends Service{
     }
 
 
-/*
-    @Override
-    public void onMarkerDataPass(Double lat, Double lon) {
-        Log.d("onMarkerDataPass", "coordinates in doubles: " + lat + lon);
-        addProximityAlert(lat, lon);
-    }
-
-    @Override
-    public void floatReferenceDataPas(Float latf, Float lonf) {
-        Log.d("onMarkerDataPass", "coordinates in floats: " + latf + lonf);
-        saveCoordinatesInPreferences(latf,lonf);
-    }
-*/
 
     public class MyLocationListener implements LocationListener {
 
@@ -146,8 +133,8 @@ public class LocationService extends Service{
         public void onLocationChanged(Location location) {
             Location pointLocation = retrievelocationFromPreferences();
             float distance = location.distanceTo(pointLocation);
-            Toast.makeText(LocationService.this,
-                    "Distance from Point:"+distance, Toast.LENGTH_LONG).show();
+           // Toast.makeText(LocationService.this,
+             //       "Distance from Point:"+distance, Toast.LENGTH_LONG).show();
         }
 
         @Override

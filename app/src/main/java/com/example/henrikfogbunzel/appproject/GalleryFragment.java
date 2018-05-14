@@ -99,9 +99,6 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
         FirebaseUser user = auth.getCurrentUser();
         String userID = user.getUid();
 
-        //UUID imgUUID = UUID.randomUUID();
-        //final String imgUIIDString = imgUUID.toString();
-
         mStorage = FirebaseStorage.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID + "/");
 
@@ -118,10 +115,7 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
                 }
 
                 mImageAdapter.notifyDataSetChanged();
-                //mImageAdapter = new ImageAdapter(getContext(), mImagesModels);
-                //mRecyclerView.setAdapter(mImageAdapter);
 
-                //mImageAdapter.setOnItemClickListener(GalleryFragment.this);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -133,7 +127,7 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(getContext(), "Normal click at position " + position, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getContext(), "Normal click at position " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -142,14 +136,14 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
         ImagesModel selectedItem = mImagesModels.get(position);
          latValue = selectedItem.getLattitude();
          lngValue = selectedItem.getLongitude();
-         Toast.makeText(getContext(), "onWhatEver " + position + " " + latValue + " " + lngValue, Toast.LENGTH_SHORT).show();
+         //Toast.makeText(getContext(), "onWhatEver " + position + " " + latValue + " " + lngValue, Toast.LENGTH_SHORT).show();
          flag = true;
          messageSendListener.onMeassageSend(latValue, lngValue, flag);
     }
 
     @Override
     public void onDeleteClick(int position) {
-        Toast.makeText(getContext(), "Delete click at position " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "Delete click at position " + position, Toast.LENGTH_SHORT).show();
         ImagesModel selectedItem = mImagesModels.get(position);
         final String selectedKey = selectedItem.getKey();
 
@@ -158,7 +152,7 @@ public class GalleryFragment extends Fragment  implements ImageAdapter.OnItemCli
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseReference.child(selectedKey).removeValue();
-                Toast.makeText(getContext(), "Item deleted " , Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(), "Item deleted " , Toast.LENGTH_SHORT).show();
 
             }
         });

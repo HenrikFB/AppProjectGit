@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="app_name">DineMinder</string>
+
     <!--main activity-->
 
     <string name="mainTextViewHeader">Velkommen</string>
@@ -10,11 +13,18 @@
     <string name="signupTextViewHeader">Registrere dig her</string>
     <string name="signupBtnSignUp"> Registrere</string>
     <string name="signupBtnLogin"> Allerede Bruger ? Log ind</string>
+    <string name="title_activity_profile">DineMinder</string>
 
     <string name="title_gallery">Galleri</string>
     <string name="title_camera">Kamera</string>
-    <string name="title_map">Map</string>
+    <string name="title_map">Kort</string>
 
     <string name="cameraBtnCapture">Tag et billede</string>
+
+
+    <string name="notification_title">Tæt på et minde!</string>
+    <string name="notification_contextText">Tryk her for at komme tilbage til din app</string>
+    <string name="floatingMenu_map">Find på kortet</string>
+    <string name="floatingMenu_deleteImg">Slet dette billede</string>
 
 </resources>

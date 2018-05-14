@@ -119,20 +119,25 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void startProfileActivity() {
-        finish();
+        //finish();
         Intent startProfileActivityIntent = new Intent(SignUpActivity.this, ProfileActivity.class);
         startProfileActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(startProfileActivityIntent, REQ_PROFILE);
     }
 
+    /*
     @Override
     protected void onStart() {
         super.onStart();
         if(mAuth.getCurrentUser()==null){
-            finish();
+           // finish();
             startActivity(new Intent(this, MainActivity.class));
         }
     }
+
+    */
+
+
 /*
     private void loadUserInformation(){
         FirebaseUser user = mAuth.getCurrentUser();

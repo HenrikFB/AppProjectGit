@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startSignUpActivity() {
-        finish();
+        //finish(); lige slettet
         Intent startSignUpAcitivityIntent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivityForResult(startSignUpAcitivityIntent, REQ_SIGNUP);
     }
@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putString("text", mainEditTextEmail.getText().toString());
     }
 */
+
 
     @Override
     protected void onStart() {

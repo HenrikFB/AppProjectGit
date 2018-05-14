@@ -136,7 +136,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 latValue = bundle.getString("latValue");
                 lngValue = bundle.getString("lngValue");
                 flag = bundle.getBoolean("flagValue");
-                Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Received: " + latValue + " " + lngValue + " " + flag.booleanValue(), Toast.LENGTH_SHORT).show();
             } catch (NullPointerException e) {
                 System.out.print("Caught the NullPointerException");
                 flag = false;
@@ -152,7 +152,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Toast.makeText(getActivity(), "Map is Ready", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(), "Map is Ready", Toast.LENGTH_SHORT).show();
 
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -161,7 +161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("users/" + userID + "/");
 
-        //https://viblo.asia/p/firebase-realtime-database-in-android-WwXKPXlwKEJ
+        //REF: https://viblo.asia/p/firebase-realtime-database-in-android-WwXKPXlwKEJ
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("users/" + userID);
@@ -171,10 +171,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ImagesModel imagesModel = dataSnapshot.getValue(ImagesModel.class);
 
-
                Double lat = Double.parseDouble(imagesModel.getLattitude());
                Double lon = Double.parseDouble(imagesModel.getLongitude());
-
 
                 LatLng newLocation = new LatLng(lat, lon);
                 /*
@@ -199,22 +197,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 float latf = lat.floatValue();
                 float lonf = lon.floatValue();
                 passDataReferencesFlot(latf, lonf);
-
-                //ProfileActivity profileActivity = new ProfileActivity();
-               /*
-                ProfileActivity profileActivity = new ProfileActivity();
-                if(lat != null && lon != null) {
-                    //profileActivity.addProximityAlert(lat, lon);
-
-                    float latf = lat.floatValue();
-                    float lonf = lon.floatValue();
-
-                    //profileActivity.saveCoordinatesInPreferences(latf, lonf);
-                }
-                //new ProfileActivity();
-
-                 */
-
             }
 
             @Override
@@ -238,14 +220,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
-/*
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Toast.makeText(getContext(), "Info window clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
+
         if (mLocationPermissionsGranted) {
             if(flag){
                 moveCamerFromGallery();
@@ -264,7 +239,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
             mMap.setMyLocationEnabled(true);
             //My search bar block it anyway and make it later as custom icon.
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
     }
 
@@ -274,12 +249,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Double lon = Double.parseDouble(lngValue);
         moveCamera(new LatLng(lat, lon), DEFAULT_ZOOM);
         flag = false;
-        //LatLng latLngBundle = new LatLng(lat, lon);
-        //moveCamera(latLngBundle,DEFAULT_ZOOM);
-//            moveCamera(new LatLng(lat, lon), DEFAULT_ZOOM);
-            /*
-            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
-             */
+
     }
 
     private void initMap() {
