@@ -10,10 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.henrikfogbunzel.appproject.GalleryFragment;
 import com.example.henrikfogbunzel.appproject.R;
 import com.example.henrikfogbunzel.appproject.model.ImagesModel;
-import com.example.henrikfogbunzel.appproject.model.Upload;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
